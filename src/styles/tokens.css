@@ -1,0 +1,71 @@
+/*
+ * 设计令牌（PRD 4.2 / AGENT.MD 2.4 的唯一事实来源）。
+ * 色值以 RGB 通道存储，供 Tailwind 的 rgb(var(--token) / <alpha-value>) 与透明度修饰符共用；
+ * 组件与业务代码只允许通过 tailwind.config.ts 暴露的语义类名消费，禁止硬编码具体色值。
+ */
+:root {
+  /* 品牌主色 */
+  --color-primary: 59 130 246; /* #3B82F6 */
+  --color-primary-hover: 37 99 235; /* #2563EB */
+  --color-primary-light: 239 246 255; /* #EFF6FF */
+
+  /* 背景与卡片 */
+  --color-page: 248 250 252; /* #F8FAFC */
+  --color-card: 255 255 255; /* #FFFFFF */
+
+  /* 文本与边框 */
+  --color-ink: 30 41 59; /* #1E293B */
+  --color-ink-muted: 100 116 139; /* #64748B */
+  --color-line: 226 232 240; /* #E2E8F0 */
+
+  /* 语义色：成功 / 高 / 中 / 低 / 删除 */
+  --color-success: 16 185 129; /* #10B981 */
+  --color-danger: 239 68 68; /* #EF4444 */
+  --color-warning: 245 158 11; /* #F59E0B */
+
+  /* 圆角：复选框 6 / 按钮·输入 8 / 卡片·模态 12 / 标签 9999 */
+  --radius-checkbox: 6px;
+  --radius-control: 8px;
+  --radius-card: 12px;
+  --radius-pill: 9999px;
+
+  /* 阴影（三级 + 主按钮光晕） */
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.06);
+  --shadow-elevated: 0 4px 12px rgb(15 23 42 / 0.08);
+  --shadow-modal: 0 12px 32px rgb(15 23 42 / 0.14);
+  --shadow-primary-glow: 0 4px 12px rgb(59 130 246 / 0.28);
+
+  /* 字号阶梯：12 / 14 / 16 / 20 / 24 */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 24px;
+
+  /* 4px 基准间距网格 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* 动效 150–250ms，仅用于状态反馈 */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 250ms;
+  --ease-feedback: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* 响应式断点（与 tailwind.config.ts screens 保持一致） */
+  --breakpoint-sm: 640px;
+  --breakpoint-lg: 1024px;
+
+  /* 触控目标 ≥ 44×44px；移动端安全区 */
+  --touch-target: 44px;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* 系统字体栈，不加载在线字体 */
+  --font-family-system:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}

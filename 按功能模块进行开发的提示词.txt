@@ -1,0 +1,30 @@
+待办事项应用 · 按功能模块开发提示词（V1.0）
+
+用法：按顺序逐条复制给 AI；每条前面都加上下面这句通用前缀；跑通 typecheck 后再进入下一条。
+
+通用前缀：请先阅读 AGENT.MD、PRD.md、TECH_DESIGN.MD，严格遵守其中的分层、状态不变量、业务规则与代码风格；只实现本条模块，不提前做后续模块；完成后运行 npm run typecheck 与相关测试并报告结果。
+提示：PRD.md 尾部有乱码字符，口径不明时以 TECH_DESIGN.MD 为准。
+
+1、初始化工程：按 AGENT.MD 的依赖白名单搭建 React 18 + TypeScript(strict) + Vite 5 项目，配置 typecheck / lint / test / build 四条 scripts、ESLint + Prettier、tailwind.config.ts 与 styles/tokens.css（PRD 4.2 色值、圆角、阴影，断点 640 / 1024px）。只搭脚手架，不写业务逻辑，跑通 typecheck 与 build。
+
+2、实现数据模型：按 TECH_DESIGN 第 3 章写 src/types/todo.ts（Task / Priority / Category / Filters / PersistedState，version=1）与 src/constants/options.ts（枚举及展示文案）。只放类型和常量，不写状态与 UI。
+
+3、实现 lib 纯函数：stats.ts（四项统计恒按全量 tasks，分母为 0 返回 0）、filter.ts（三维 AND + 关键词搜索，不区分大小写）、date.ts（YYYY-MM-DD 字符串比较与展示）、storage.ts（单键 todoapp.state.v1 读写、全链路 try/catch、损坏备份、未知 version 降级、migrate 预留）。不得依赖 React / store，并补齐这四个模块的单测。
+
+4、实现状态层：写 store/useTodoStore.ts，包含 add / update / toggle / remove / setFilter / setKeyword 六个 action 与 Zustand persist；落盘只存 { version, tasks, preferences }，派生数据不落盘。守住 4 条状态不变量，尤其「编辑/勾选不改变顺序」「completed 与 completedAt 一致」「已完成任务在 store 层也拒绝编辑」，并补 store 单测。
+
+5、实现派生数据 hooks：useDebounce(keyword, 250) 与 useDerivedTodos（useMemo 一次遍历同时得到可见任务与统计）。统计输入恒为全量 tasks，不受筛选 / 搜索影响；组件不得自己算统计。
+
+6、实现 UI 基础组件：Button / Input / Tag / Checkbox / ConfirmDialog / Toast / EmptyState，样式走 tokens.css 设计令牌，补 role / aria 属性；模态支持焦点陷阱、Esc 关闭与焦点归还，触控目标 ≥ 44×44px。
+
+7、实现页面骨架与统计看板：App.tsx + Header + StatCards（总任务 / 待完成 / 已完成 / 完成率），桌面内容区 1080px 居中；Header 常驻「数据仅存本机」提示，统计区 aria-live="polite"，空列表完成率显示 0%。
+
+8、实现工具栏：SearchBar + FilterBar（分类 × 优先级 × 状态三维单选、维度间 AND、与搜索叠加仍为 AND、一键清除）；无匹配结果给「清除筛选」引导，操作反馈用 Toast（2–3s 自动消失）。
+
+9、实现任务列表：TodoList / TodoItem，每行含复选框、标题、描述摘要、截止日期、优先级 / 分类标签、编辑、删除；已完成显示删除线并淡化、隐藏编辑入口，删除走二次确认（含任务名、注明不可撤销）；用 React.memo 且 key={task.id}，勾选后位置不变、可取消完成。
+
+10、实现任务表单：TodoFormModal 新建 / 编辑共用，字段顺序为标题 → 描述 → 截止日期 → 优先级 → 分类 → [取消] [保存]；只填标题即可提交、空标题拦截、编辑预填全部字段；新建插入列表顶部，移动端改为底部抽屉并适配安全区。
+
+11、实现响应式与空状态：按 640 / 1024px 三档重排（<640 单列、统计卡 2×2、筛选横向滚动、「+ 新建」改右下角悬浮按钮），补齐无任务 / 无匹配 / 全部完成三种空状态；保证无横向滚动、全键盘可达、断网刷新可用。
+
+12、收尾验收：补齐 AGENT.MD 第 3 章的 8 组必测用例，依次运行 npm run typecheck / lint / test / build 并全部通过；人工走查 375 / 768 / 1440px 三档、断网刷新、全键盘流程，列明无法自动验证的项。
