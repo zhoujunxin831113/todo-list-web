@@ -1,17 +1,13 @@
-import { Pencil, Trash2 } from 'lucide-react';
 import { memo } from 'react';
-import { CATEGORY_LABELS, PRIORITY_LABELS } from '../constants/options';
-import { formatDueDate } from '../lib/date';
-import type { Task } from '../types/todo';
-import { Button } from './ui/Button';
+import { Pencil, Trash2 } from 'lucide-react';
 import { Checkbox } from './ui/Checkbox';
 import { Tag, type TagTone } from './ui/Tag';
-
-const PRIORITY_TONES: Record<Task['priority'], TagTone> = {
-  high: 'high',
-  medium: 'medium',
-  low: 'low',
-};
+import {
+  CATEGORY_LABELS,
+  PRIORITY_LABELS,
+} from '../constants/options';
+import { formatDueDate } from '../lib/date';
+import type { Priority, Task } from '../types/todo';
 
 export interface TodoItemProps {
   task: Task;
@@ -20,79 +16,84 @@ export interface TodoItemProps {
   onDelete: (task: Task) => void;
 }
 
+const PRIORITY_TONES: Record<Priority, TagTone> = {
+  high: 'high',
+  medium: 'medium',
+  low: 'low',
+};
+
 function TodoItemComponent({ task, onToggle, onEdit, onDelete }: TodoItemProps) {
-  // 描述摘要 + 截止日期，单行省略（PRD 4.3 行布局）
-  const summary = [
-    task.description,
-    task.dueDate !== null ? `截止 ${formatDueDate(task.dueDate)}` : null,
-  ]
-    .filter(Boolean)
-    .join(' · ');
+  const summaryParts = [task.description, task.dueDate ? `截止 ${formatDueDate(task.dueDate)}` : ''].filter(
+    Boolean,
+  );
 
   return (
     <li
       className={[
-        'rounded-card bg-card p-4 shadow-card transition-opacity duration-fast',
-        task.completed ? 'opacity-60' : '',
-      ]
-        .filter(Boolean)
-        .join(' ')}
+        'rounded-control border-2 border-ink/15 bg-surface p-4 transition-all duration-fast',
+        task.completed ? 'opacity-60' : 'hover:border-ink/40',
+      ].join(' ')}
     >
       <div className="flex items-start gap-3">
-        <Checkbox
-          aria-label={task.completed ? `取消完成「${task.title}」` : `完成「${task.title}」`}
-          checked={task.completed}
-          onChange={() => onToggle(task.id)}
-        />
+        <div className="pt-0.5">
+          <Checkbox
+            checked={task.completed}
+            onChange={() => onToggle(task.id)}
+            aria-label={`${task.completed ? '取消完成' : '完成'}「${task.title}」`}
+          />
+        </div>
+
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
+          <p
+            className={[
+              'break-words text-sm font-bold text-ink',
+              task.completed ? 'line-through' : '',
+            ].join(' ')}
+          >
+            {task.title}
+          </p>
+          {summaryParts.length > 0 && (
             <p
               className={[
-                'truncate text-sm font-medium text-ink',
+                'mt-1 break-words text-xs text-ink-muted',
                 task.completed ? 'line-through' : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
+              ].join(' ')}
             >
-              {task.title}
-            </p>
-            <Tag tone={PRIORITY_TONES[task.priority]}>{PRIORITY_LABELS[task.priority]}</Tag>
-            <Tag tone="category">{CATEGORY_LABELS[task.category]}</Tag>
-          </div>
-          {summary !== '' && (
-            <p
-              className={[
-                'mt-1 truncate text-xs text-ink-muted',
-                task.completed ? 'line-through' : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-            >
-              {summary}
+              {summaryParts.join(' · ')}
             </p>
           )}
+
+          <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            <Tag tone="category">{CATEGORY_LABELS[task.category]}</Tag>
+            <Tag tone={PRIORITY_TONES[task.priority]}>{PRIORITY_LABELS[task.priority]}</Tag>
+            {task.dueDate && (
+              <span className="font-mono text-xs font-medium text-ink-muted">
+                {formatDueDate(task.dueDate)}
+              </span>
+            )}
+          </div>
         </div>
+
         <div className="flex shrink-0 items-center gap-1">
-          {/* 已完成隐藏编辑入口，但删除仍可用（PRD 4.4） */}
+          {/* 已完成任务不可编辑：UI 层隐藏入口，store.update 内还有第二道守卫 */}
           {!task.completed && (
-            <Button
-              size="icon"
-              variant="ghost"
+            <button
+              type="button"
               aria-label={`编辑「${task.title}」`}
               onClick={() => onEdit(task)}
+              className="flex h-11 w-11 items-center justify-center rounded-control text-ink-muted transition-colors hover:bg-ink/10 hover:text-ink"
             >
-              <Pencil size={16} aria-hidden="true" />
-            </Button>
+              <Pencil size={18} aria-hidden="true" />
+            </button>
           )}
-          <Button
-            size="icon"
-            variant="ghost"
+          <button
+            type="button"
             aria-label={`删除「${task.title}」`}
-            className="hover:text-danger"
             onClick={() => onDelete(task)}
+            className="flex h-11 w-11 items-center justify-center rounded-control text-ink-muted transition-colors hover:bg-danger/10 hover:text-danger"
           >
-            <Trash2 size={16} aria-hidden="true" />
-          </Button>
+            <Trash2 size={18} aria-hidden="true" />
+          </button>
         </div>
       </div>
     </li>

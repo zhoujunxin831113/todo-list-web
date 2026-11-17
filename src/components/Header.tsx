@@ -1,23 +1,10 @@
-import { ListTodo, Lock } from 'lucide-react';
-
 export function Header() {
   return (
-    <header className="flex items-center justify-between gap-4">
-      <div className="flex items-center gap-3">
-        <span
-          aria-hidden="true"
-          className="flex h-10 w-10 items-center justify-center rounded-control bg-primary text-white shadow-primary-glow"
-        >
-          <ListTodo size={20} strokeWidth={2.25} />
-        </span>
-        <div>
-          <h1 className="text-xl font-semibold text-ink">待办事项</h1>
-          <p className="mt-1 flex items-center gap-1 text-xs text-ink-muted">
-            <Lock size={14} aria-hidden="true" />
-            数据仅存本机
-          </p>
-        </div>
-      </div>
+    <header className="border-b-2 border-ink pb-4">
+      <h1 className="text-xl font-extrabold tracking-tight text-ink sm:text-2xl">我的待办清单</h1>
+      <p className="mt-1.5 font-mono text-xs tracking-wide text-ink-muted sm:text-sm">
+        Todo List · 高效管理每日任务
+      </p>
     </header>
   );
 }

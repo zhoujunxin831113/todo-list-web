@@ -52,7 +52,7 @@ export function TodoEmptyState({ kind, onCreate, onClear }: TodoEmptyStateProps)
   const content = CONTENT[kind];
 
   return (
-    <div className="mt-4">
+    <div className="mt-5">
       <EmptyState
         icon={content.icon}
         title={content.title}

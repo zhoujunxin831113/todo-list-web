@@ -96,13 +96,13 @@ function FormDialog({ heading, form, errors, onChange, onSubmit, onCancel }: For
         aria-modal="true"
         aria-labelledby={headingId}
         className={[
-          'w-full overflow-y-auto rounded-t-card bg-card p-6 shadow-modal',
+          'w-full overflow-y-auto rounded-t-card border-2 border-ink bg-card p-6 shadow-modal',
           // 移动端底部抽屉：限高可滚动 + 安全区留白；≥640 变为居中弹窗
           'mb-[var(--safe-area-bottom)] max-h-[85vh]',
           'sm:mb-0 sm:max-w-[480px] sm:rounded-card',
         ].join(' ')}
       >
-        <h2 id={headingId} className="text-lg font-semibold text-ink">
+        <h2 id={headingId} className="text-lg font-extrabold text-ink">
           {heading}
         </h2>
         {/* 字段顺序固定：标题 → 描述 → 截止日期 → 优先级 → 分类 → [取消] [保存] */}

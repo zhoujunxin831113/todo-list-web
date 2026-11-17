@@ -19,8 +19,8 @@ describe('空状态', () => {
     expect(screen.getByText('还没有任务')).not.toBeNull();
     expect(screen.getByText('创建第一个待办事项，开始安排要做的事。')).not.toBeNull();
 
-    // 空状态行动按钮位于工具栏按钮之后、悬浮按钮之前
-    fireEvent.click(screen.getAllByRole('button', { name: '新建任务' })[1]);
+    // 空状态行动按钮在前、移动端悬浮按钮在后
+    fireEvent.click(screen.getAllByRole('button', { name: '新建任务' })[0]);
     expect(screen.getByRole('heading', { name: '新建任务' })).not.toBeNull();
   });
 
@@ -93,17 +93,18 @@ describe('响应式骨架', () => {
     expect(main.className).toContain('lg:max-w-[1080px]');
   });
 
-  it('<640 用右下角悬浮新建按钮，工具栏按钮在 ≥640 才显示', () => {
+  it('<640 用右下角悬浮新建按钮，快速添加卡片在 ≥640 才显示', () => {
     render(<App />);
 
-    const floating = screen.getAllByRole('button', { name: '新建任务' })[2];
+    // 无任务空态下，空状态行动按钮在前、移动端悬浮按钮在后
+    const floating = screen.getAllByRole('button', { name: '新建任务' })[1];
     expect(floating.className).toContain('sm:hidden');
     expect(floating.className).toContain('fixed');
     expect(floating.className).toContain('rounded-pill');
 
-    const toolbarButton = screen.getAllByRole('button', { name: '新建任务' })[0];
-    expect(toolbarButton.className).toContain('hidden');
-    expect(toolbarButton.className).toContain('sm:inline-flex');
+    const quickAdd = screen.getByLabelText('快速添加');
+    expect(quickAdd.className).toContain('hidden');
+    expect(quickAdd.className).toContain('sm:block');
 
     fireEvent.click(floating);
     expect(screen.getByRole('heading', { name: '新建任务' })).not.toBeNull();

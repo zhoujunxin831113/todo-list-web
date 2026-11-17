@@ -205,7 +205,7 @@ describe('App 表单接入', () => {
     useTodoStore.setState({ tasks: [makeTask({ id: 'old', title: '旧任务' })] });
     render(<App />);
 
-    // 工具栏按钮与移动端悬浮按钮同名，DOM 中工具栏在前
+    // 通过移动端悬浮按钮打开完整表单弹窗（快速添加卡片与弹窗存在同名字段）
     fireEvent.click(screen.getAllByRole('button', { name: '新建任务' })[0]);
     expect(screen.getByRole('heading', { name: '新建任务' })).not.toBeNull();
 
@@ -224,7 +224,6 @@ describe('App 表单接入', () => {
   it('空标题保存被拦截，store 不新增任务', () => {
     render(<App />);
 
-    // 工具栏按钮与移动端悬浮按钮同名，DOM 中工具栏在前
     fireEvent.click(screen.getAllByRole('button', { name: '新建任务' })[0]);
     fireEvent.click(screen.getByRole('button', { name: '保存' }));
 

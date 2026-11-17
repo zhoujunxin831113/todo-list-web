@@ -1,56 +1,65 @@
 import type { TodoStats } from '../lib/stats';
 
 export interface StatCardsProps {
-  /** 必须来自全量 tasks 的统计（hooks 层产出），组件内不得自行计算 */
   stats: TodoStats;
 }
 
-interface StatCardProps {
+interface StatRow {
   label: string;
-  value: number | string;
-  accent?: boolean;
-}
-
-function StatCard({ label, value, accent = false }: StatCardProps) {
-  return (
-    <div className="rounded-card bg-card p-4 shadow-card">
-      <p className="text-xs text-ink-muted">{label}</p>
-      <p
-        className={[
-          'mt-1 text-xl font-semibold tabular-nums',
-          accent ? 'text-primary' : 'text-ink',
-        ].join(' ')}
-      >
-        {value}
-      </p>
-    </div>
-  );
+  value: number;
+  tone: 'ink' | 'warning' | 'success';
+  suffix?: string;
 }
 
 export function StatCards({ stats }: StatCardsProps) {
+  const rows: StatRow[] = [
+    { label: '总任务', value: stats.total, tone: 'ink' },
+    { label: '待完成', value: stats.active, tone: 'warning' },
+    { label: '已完成', value: stats.completed, tone: 'success' },
+  ];
+  const toneClass = {
+    ink: 'text-ink',
+    warning: 'text-warning',
+    success: 'text-success',
+  } as const;
+
   return (
     <section
       aria-label="任务统计"
       aria-live="polite"
-      className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4"
+      className="rounded-card border-2 border-ink bg-card p-5 shadow-card"
     >
-      <StatCard label="总任务" value={stats.total} />
-      <StatCard label="待完成" value={stats.active} />
-      <StatCard label="已完成" value={stats.completed} />
-      <div className="rounded-card bg-card p-4 shadow-card">
-        <p className="text-xs text-ink-muted">完成率</p>
-        <p className="mt-1 text-xl font-semibold tabular-nums text-primary">{stats.rate}%</p>
-        {/* 完成率 = 已完成 ÷ 总任务，总数 0 时为 0%（PRD 2.2-6） */}
+      <h2 className="mb-3 text-sm font-bold text-ink-muted">统计数据</h2>
+
+      <dl className="divide-y-2 divide-ink/10">
+        {rows.map((row) => (
+          <div key={row.label} className="flex items-center justify-between py-2.5">
+            <dt className="text-sm font-medium text-ink">{row.label}</dt>
+            <dd
+              className={`font-mono text-lg font-bold tabular-nums ${toneClass[row.tone]}`}
+            >
+              {row.value}
+              {row.suffix ?? ''}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      <div className="mt-4 border-t-2 border-ink/10 pt-4">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-ink-muted">完成率</span>
+          <span className="font-mono text-lg font-bold tabular-nums text-ink">{stats.rate}%</span>
+        </div>
         <div
+          className="mt-2 h-3 w-full overflow-hidden rounded-pill border-2 border-ink bg-page"
           role="progressbar"
-          aria-label="完成率"
+          aria-valuenow={stats.rate}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-valuenow={stats.rate}
-          className="mt-2 h-2 overflow-hidden rounded-pill bg-line/60"
+          aria-label="任务完成率"
         >
           <div
-            className="h-full rounded-pill bg-primary transition-[width]"
+            className="h-full rounded-pill bg-ink transition-all duration-slow"
             style={{ width: `${stats.rate}%` }}
           />
         </div>

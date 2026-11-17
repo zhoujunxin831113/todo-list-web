@@ -1,36 +1,47 @@
-import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, useId, type InputHTMLAttributes } from 'react';
+import { Check } from 'lucide-react';
 
-export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  /** 可见文案；列表行可省略，但此时必须传 aria-label 说明用途 */
-  label?: ReactNode;
-  labelClassName?: string;
+export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
 }
 
-// 原生 checkbox + label（TECH_DESIGN 4-6）：整块命中区 ≥ 44×44px，可点击 label 触发切换
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
-  { label, labelClassName, className, ...props },
+  { label, id, className, ...props },
   ref,
 ) {
+  const generatedId = useId();
+  const checkboxId = id ?? generatedId;
+
   return (
-    <label
-      className={[
-        'inline-flex min-h-touch min-w-touch cursor-pointer items-center gap-2',
-        className,
-      ]
-        .filter(Boolean)
-        .join(' ')}
-    >
-      <input
-        ref={ref}
-        type="checkbox"
-        className="h-5 w-5 shrink-0 cursor-pointer rounded-checkbox border border-line accent-primary"
-        {...props}
-      />
+    <span className="inline-flex items-center gap-2">
+      <span className="relative inline-flex h-6 w-6 shrink-0 items-center justify-center">
+        <input
+          ref={ref}
+          id={checkboxId}
+          type="checkbox"
+          className={[
+            'peer h-6 w-6 cursor-pointer appearance-none rounded-checkbox border-2 border-ink bg-card',
+            'transition-colors duration-fast checked:border-accent checked:bg-accent',
+            'focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-accent/40',
+            'disabled:cursor-not-allowed disabled:opacity-50',
+            className,
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          {...props}
+        />
+        <Check
+          size={16}
+          strokeWidth={3}
+          aria-hidden="true"
+          className="pointer-events-none absolute text-white opacity-0 transition-opacity peer-checked:opacity-100"
+        />
+      </span>
       {label !== undefined && (
-        <span className={['text-sm text-ink', labelClassName].filter(Boolean).join(' ')}>
+        <label htmlFor={checkboxId} className="cursor-pointer select-none text-sm text-ink">
           {label}
-        </span>
+        </label>
       )}
-    </label>
+    </span>
   );
 });

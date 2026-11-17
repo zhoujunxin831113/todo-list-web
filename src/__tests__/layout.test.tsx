@@ -5,16 +5,16 @@ import { Header } from '../components/Header';
 import { StatCards } from '../components/StatCards';
 
 describe('Header', () => {
-  it('展示品牌标题与「数据仅存本机」提示', () => {
+  it('展示品牌标题与英文副标题', () => {
     render(<Header />);
 
-    expect(screen.getByRole('heading', { level: 1, name: '待办事项' })).not.toBeNull();
-    expect(screen.getByText('数据仅存本机')).not.toBeNull();
+    expect(screen.getByRole('heading', { level: 1, name: '我的待办清单' })).not.toBeNull();
+    expect(screen.getByText(/Todo List/)).not.toBeNull();
   });
 });
 
 describe('StatCards', () => {
-  it('四卡常驻：总任务 / 待完成 / 已完成 / 完成率', () => {
+  it('统计面板：总任务 / 待完成 / 已完成 / 完成率', () => {
     render(<StatCards stats={{ total: 5, active: 3, completed: 2, rate: 40 }} />);
 
     const group = screen.getByLabelText('任务统计');
@@ -46,11 +46,21 @@ describe('StatCards', () => {
 });
 
 describe('App 骨架', () => {
-  it('渲染 Header 与统计面板（初始空态：四卡全 0）', () => {
+  it('渲染 Header、统计面板与筛选卡片（初始空态：统计全 0）', () => {
     render(<App />);
 
-    expect(screen.getByRole('heading', { level: 1, name: '待办事项' })).not.toBeNull();
+    expect(screen.getByRole('heading', { level: 1, name: '我的待办清单' })).not.toBeNull();
     expect(screen.getByLabelText('任务统计')).not.toBeNull();
+    expect(screen.getByLabelText('筛选任务')).not.toBeNull();
+    expect(screen.getByLabelText('今日任务')).not.toBeNull();
     expect(screen.getByText('0%')).not.toBeNull();
+  });
+
+  it('内容区 720px 起步、≥1024 收窄到 1080px', () => {
+    render(<App />);
+
+    const main = screen.getByRole('main');
+    expect(main.className).toContain('max-w-[720px]');
+    expect(main.className).toContain('lg:max-w-[1080px]');
   });
 });

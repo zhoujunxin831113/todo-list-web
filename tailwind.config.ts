@@ -25,6 +25,8 @@ export default {
         muted: 'rgb(var(--color-ink-muted) / <alpha-value>)',
       },
       line: 'rgb(var(--color-line) / <alpha-value>)',
+      surface: 'rgb(var(--color-surface) / <alpha-value>)',
+      accent: 'rgb(var(--color-accent) / <alpha-value>)',
       success: 'rgb(var(--color-success) / <alpha-value>)',
       danger: 'rgb(var(--color-danger) / <alpha-value>)',
       warning: 'rgb(var(--color-warning) / <alpha-value>)',
@@ -47,6 +49,24 @@ export default {
       base: '16px',
       lg: '20px',
       xl: '24px',
+    },
+    fontFamily: {
+      sans: ['var(--font-sans)'],
+      mono: ['var(--font-mono)'],
+    },
+    borderWidth: {
+      DEFAULT: '2px',
+      0: '0',
+      1: '1px',
+      2: '2px',
+      3: '3px',
+    },
+    ringWidth: {
+      DEFAULT: '3px',
+      1: '1px',
+      2: '2px',
+      3: '3px',
+      4: '4px',
     },
     spacing: {
       // 4px 基准网格；补齐 20/28/36/40/44/48 便于控件尺寸与 PRD 的 40px 按钮高度

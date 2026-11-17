@@ -56,9 +56,9 @@ export function ConfirmDialog({
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={description ? descriptionId : undefined}
-        className="w-full max-w-[420px] rounded-card bg-card p-6 shadow-modal"
+        className="w-full max-w-[420px] rounded-card border-2 border-ink bg-card p-6 shadow-modal"
       >
-        <h2 id={titleId} className="text-lg font-semibold text-ink">
+        <h2 id={titleId} className="text-lg font-extrabold text-ink">
           {title}
         </h2>
         {description !== undefined && (

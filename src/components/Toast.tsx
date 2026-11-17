@@ -1,30 +1,21 @@
 import { useEffect } from 'react';
-
-export type ToastTone = 'info' | 'success' | 'danger';
+import { CheckCircle2 } from 'lucide-react';
 
 export interface ToastProps {
   open: boolean;
   message: string;
-  tone?: ToastTone;
-  /** 2–3s 自动消失（PRD 4.4），默认 2500ms */
-  duration?: number;
   onClose: () => void;
+  duration?: number;
 }
 
-const DOT_CLASSES: Record<ToastTone, string> = {
-  info: 'bg-primary',
-  success: 'bg-success',
-  danger: 'bg-danger',
-};
-
-export function Toast({ open, message, tone = 'info', duration = 2500, onClose }: ToastProps) {
+export function Toast({ open, message, onClose, duration = 2500 }: ToastProps) {
   useEffect(() => {
     if (!open) {
       return;
     }
-    const timer = setTimeout(onClose, duration);
-    return () => clearTimeout(timer);
-  }, [open, duration, onClose]);
+    const timer = window.setTimeout(onClose, duration);
+    return () => window.clearTimeout(timer);
+  }, [open, onClose, duration]);
 
   if (!open) {
     return null;
@@ -34,10 +25,12 @@ export function Toast({ open, message, tone = 'info', duration = 2500, onClose }
     <div
       role="status"
       aria-live="polite"
-      className="fixed bottom-6 left-1/2 z-50 flex max-w-[calc(100vw-32px)] -translate-x-1/2 items-center gap-2 rounded-card bg-ink px-4 py-2 text-sm text-white shadow-modal mb-[var(--safe-area-bottom)]"
+      className="pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center px-4"
     >
-      <span aria-hidden="true" className={`h-2 w-2 shrink-0 rounded-pill ${DOT_CLASSES[tone]}`} />
-      <span>{message}</span>
+      <div className="pointer-events-auto flex items-center gap-2 rounded-control border-2 border-ink bg-card px-4 py-3 text-sm font-medium text-ink shadow-elevated">
+        <CheckCircle2 size={18} className="shrink-0 text-success" aria-hidden="true" />
+        <span>{message}</span>
+      </div>
     </div>
   );
 }

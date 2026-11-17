@@ -1,14 +1,17 @@
+import { useId, type ReactNode, type SelectHTMLAttributes } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { useId } from 'react';
-import type { SelectOption } from '../../constants/options';
 
-export interface SelectProps<T extends string> {
+export interface SelectOption<T extends string> {
+  value: T;
+  label: string;
+}
+
+export interface SelectProps<T extends string>
+  extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'value' | 'onChange'> {
   label?: string;
   value: T;
   options: readonly SelectOption<T>[];
   onChange: (value: T) => void;
-  className?: string;
-  containerClassName?: string;
 }
 
 export function Select<T extends string>({
@@ -16,30 +19,33 @@ export function Select<T extends string>({
   value,
   options,
   onChange,
+  id,
   className,
-  containerClassName,
+  ...rest
 }: SelectProps<T>) {
-  const id = useId();
+  const generatedId = useId();
+  const selectId = id ?? generatedId;
 
   return (
-    <div className={containerClassName}>
+    <div className="flex w-full flex-col gap-1.5">
       {label !== undefined && (
-        <label htmlFor={id} className="mb-1 block text-sm font-medium text-ink">
+        <label htmlFor={selectId} className="text-sm font-bold text-ink">
           {label}
         </label>
       )}
       <div className="relative">
         <select
-          id={id}
+          id={selectId}
           value={value}
           onChange={(event) => onChange(event.target.value as T)}
           className={[
-            'h-11 w-full appearance-none rounded-control border border-line bg-card pl-3 pr-8 text-sm text-ink',
-            'focus:border-primary focus:outline-none focus:ring-[3px] focus:ring-primary/20',
+            'h-11 w-full appearance-none rounded-control border-2 border-ink bg-card pl-3 pr-9 text-sm font-medium text-ink',
+            'cursor-pointer transition-shadow duration-fast focus:outline-none focus:ring-3 focus:ring-ink/30',
             className,
           ]
             .filter(Boolean)
             .join(' ')}
+          {...rest}
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -48,11 +54,13 @@ export function Select<T extends string>({
           ))}
         </select>
         <ChevronDown
-          size={16}
+          size={18}
           aria-hidden="true"
-          className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-ink-muted"
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-ink"
         />
       </div>
     </div>
   );
 }
+
+export type { ReactNode };

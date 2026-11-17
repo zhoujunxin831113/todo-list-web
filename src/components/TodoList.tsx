@@ -14,7 +14,7 @@ export function TodoList({ tasks, onToggle, onEdit, onDelete }: TodoListProps) {
   }
 
   return (
-    <ul aria-label="任务列表" className="mt-4 flex flex-col gap-3 sm:gap-4">
+    <ul aria-label="任务列表" className="mt-5 flex flex-col gap-4">
       {/* key 固定为 task.id；回调由上层以 useCallback 保持稳定，配合 React.memo 避免无效重渲染 */}
       {tasks.map((task) => (
         <TodoItem
